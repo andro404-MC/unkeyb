@@ -29,11 +29,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.Type {
-		case tea.KeyEscape:
+		case tea.KeyEscape, tea.KeyCtrlC:
 			return m, tea.Quit
-
-		case tea.KeyTab:
-			m.shifted = !m.shifted
 
 		case tea.KeyRunes:
 			m.selected = msg.Runes[0]
@@ -50,14 +47,23 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 	var s string
-	s += fmt.Sprintf("\n\trequested : %c\tshifted %t\n", m.next, m.shifted)
+	m.shifted = false
+	s += fmt.Sprintf("\n\trequested : %c\n", m.next)
+
+	for _, item := range layouts[m.layout] {
+		for _, shiftedKey := range item.sKeys {
+			if shiftedKey == m.selected {
+				m.shifted = true
+				break
+			}
+		}
+	}
 
 	for _, v := range layouts[m.layout] {
 		// prefix
 		s += v.prefix
 
 		// keys
-
 		if m.shifted {
 			for _, k := range v.sKeys {
 				isItClicked := m.selected == k

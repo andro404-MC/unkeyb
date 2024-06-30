@@ -53,11 +53,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 	var s string
+	var sentence string
 	if utf8.RuneCountInString(m.sentence) > 39 {
-		s += fmt.Sprintf("\n     %s\n", string([]rune(m.sentence)[:39]))
+		sentence += string([]rune(m.sentence)[:39])
 	} else {
-		s += fmt.Sprintf("\n     %s\n", m.sentence)
+		sentence += m.sentence
 	}
+
+	s += fmt.Sprintf(
+		"\n     %s\n",
+		colorRequested+string([]rune(sentence)[:1])+colorReset+string([]rune(sentence)[1:]),
+	)
 
 	for _, item := range layouts[m.layout] {
 		for _, shiftedKey := range item.sKeys {
@@ -82,9 +88,9 @@ func (m model) View() string {
 
 		// keys
 		for _, k := range *rangedSlice {
-			isItClicked := m.selected == k
+			isClicked := m.selected == k
 
-			if isItClicked {
+			if isClicked {
 				if k == m.requested {
 					s += fmt.Sprintf("%s%c%s  ", colorCorrect, k, colorReset)
 				} else {
@@ -98,10 +104,16 @@ func (m model) View() string {
 		// postfix
 		s += v.postfix
 	}
+
 	// space
 	if m.selected == ' ' {
-		s += "\n\t    ┌────────────────────────┐"
-		s += "\n\t    └────────────────────────┘"
+		if m.selected == m.requested {
+			s += fmt.Sprintf("\n\t    %s┌────────────────────────┐%s", colorCorrect, colorReset)
+			s += fmt.Sprintf("\n\t    %s└────────────────────────┘%s", colorCorrect, colorReset)
+		} else {
+			s += fmt.Sprintf("\n\t    %s┌────────────────────────┐%s", colorWrong, colorReset)
+			s += fmt.Sprintf("\n\t    %s└────────────────────────┘%s", colorWrong, colorReset)
+		}
 	} else {
 		s += "\n\t    🬞🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬏"
 		s += "\n\t    🬁🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬀"

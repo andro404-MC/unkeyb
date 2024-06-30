@@ -20,9 +20,10 @@ type row struct {
 var keyList []rune
 
 const (
-	colorCorrect = "\033[38;5;49m"
-	colorWrong   = "\033[38;5;196m"
-	colorReset   = "\033[0m"
+	colorCorrect   = "\033[38;5;4m"
+	colorWrong     = "\033[38;5;1m"
+	colorRequested = "\033[4m"
+	colorReset     = "\033[0m"
 )
 
 func generateList(layout string) {

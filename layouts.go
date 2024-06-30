@@ -3,7 +3,7 @@ package main
 var layouts = map[string][]row{
 	"gb": {
 		{
-			prefix: "\n     ", postfix: "\n\n",
+			prefix: "     ", postfix: "\n\n",
 			sKeys: []rune{'¬', '!', '"', '£', '$', '%', '^', '&', '*', '(', ')', '_', '+'},
 			keys:  []rune{'`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='},
 		},
@@ -25,7 +25,7 @@ var layouts = map[string][]row{
 	},
 	"us": {
 		{
-			prefix: "\n     ", postfix: "\n\n",
+			prefix: "     ", postfix: "\n\n",
 			sKeys: []rune{'`', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+'},
 			keys:  []rune{'~', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='},
 		},

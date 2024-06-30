@@ -2,17 +2,19 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"os"
+	"strings"
+	"unicode/utf8"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/icrowley/fake"
 )
 
 func main() {
 	m := model{}
-	m.layout = "gb"
+	m.layout = "us"
 	generateList(m.layout)
-	m.next = keyList[rand.Intn(len(keyList))]
+	m.sentence = fake.Sentence()
 
 	p := tea.NewProgram(m)
 	if _, err := p.Run(); err != nil {
@@ -32,12 +34,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyEscape, tea.KeyCtrlC:
 			return m, tea.Quit
 
-		case tea.KeyRunes:
+		case tea.KeyRunes, tea.KeySpace:
 			m.selected = msg.Runes[0]
 
-			if m.selected == m.next {
-				m.requested = m.next
-				m.next = keyList[rand.Intn(len(keyList))]
+			if m.selected == []rune(m.sentence)[0] {
+				m.requested = []rune(m.sentence)[0]
+				m.sentence = strings.TrimPrefix(m.sentence, string([]rune(m.sentence)[0]))
+			}
+
+			if m.sentence == "" {
+				m.sentence = fake.Sentence()
 			}
 		}
 	}
@@ -47,8 +53,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 	var s string
-	m.shifted = false
-	s += fmt.Sprintf("\n\trequested : %c\n", m.next)
+	if utf8.RuneCountInString(m.sentence) > 39 {
+		s += fmt.Sprintf("\n     %s\n", string([]rune(m.sentence)[:39]))
+	} else {
+		s += fmt.Sprintf("\n     %s\n", m.sentence)
+	}
 
 	for _, item := range layouts[m.layout] {
 		for _, shiftedKey := range item.sKeys {
@@ -63,39 +72,39 @@ func (m model) View() string {
 		// prefix
 		s += v.prefix
 
-		// keys
+		var rangedSlice *[]rune
+
 		if m.shifted {
-			for _, k := range v.sKeys {
-				isItClicked := m.selected == k
-
-				if isItClicked {
-					if k == m.requested {
-						s += fmt.Sprintf("\033[38;5;27m%c\033[0m  ", k)
-					} else {
-						s += fmt.Sprintf("\033[38;5;196m%c\033[0m  ", k)
-					}
-				} else {
-					s += fmt.Sprintf("%c  ", k)
-				}
-			}
+			rangedSlice = &v.sKeys
 		} else {
-			for _, k := range v.keys {
-				isItClicked := m.selected == k
+			rangedSlice = &v.keys
+		}
 
-				if isItClicked {
-					if k == m.requested {
-						s += fmt.Sprintf("\033[38;5;27m%c\033[0m  ", k)
-					} else {
-						s += fmt.Sprintf("\033[38;5;196m%c\033[0m  ", k)
-					}
+		// keys
+		for _, k := range *rangedSlice {
+			isItClicked := m.selected == k
+
+			if isItClicked {
+				if k == m.requested {
+					s += fmt.Sprintf("%s%c%s  ", colorCorrect, k, colorReset)
 				} else {
-					s += fmt.Sprintf("%c  ", k)
+					s += fmt.Sprintf("%s%c%s  ", colorWrong, k, colorReset)
 				}
+			} else {
+				s += fmt.Sprintf("%c  ", k)
 			}
 		}
 
 		// postfix
 		s += v.postfix
+	}
+	// space
+	if m.selected == ' ' {
+		s += "\n\t    ┌────────────────────────┐"
+		s += "\n\t    └────────────────────────┘"
+	} else {
+		s += "\n\t    🬞🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬭🬏"
+		s += "\n\t    🬁🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬂🬀"
 	}
 
 	return s

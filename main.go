@@ -10,21 +10,14 @@ import (
 
 func main() {
 	m := model{}
-	m.next = keyList[rand.Intn(len(keyList))]
 	m.layout = "gb"
 	generateList(m.layout)
+	m.next = keyList[rand.Intn(len(keyList))]
 
 	p := tea.NewProgram(m)
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("WHAAAAAT ITS BROKEN ALREAAADY ???\ndetails: %v", err)
 		os.Exit(1)
-	}
-}
-
-func generateList(layout string) {
-	for _, v := range layouts[layout] {
-		keyList = append(keyList, v.keys...)
-		keyList = append(keyList, v.sKeys...)
 	}
 }
 

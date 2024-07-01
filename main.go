@@ -36,7 +36,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.Type {
 		case tea.KeyEscape, tea.KeyCtrlC:
 			return m, tea.Quit
-
 		case tea.KeyRunes, tea.KeySpace:
 			m.selected = msg.Runes[0]
 
@@ -49,6 +48,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.sentence = generator.Sentence()
 			}
 		}
+
+	case tea.WindowSizeMsg:
+		m.termWidh = msg.Width
 	}
 
 	return m, nil

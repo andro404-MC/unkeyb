@@ -7,9 +7,12 @@ import (
 )
 
 func bigKeyb(m *model) string {
-	var s string
+	var s, padding string
+	for i := 0; i < (m.termWidh-66)/2+1; i++ {
+		padding += " "
+	}
 
-	s += "\n     ┌"
+	s += "\n" + padding + "┌"
 
 	for i := 0; i < 63; i++ {
 		s += "─"
@@ -30,11 +33,11 @@ func bigKeyb(m *model) string {
 	}
 
 	s += fmt.Sprintf(
-		"\n     │ %s",
+		"\n"+padding+"│ %s",
 		colorRequested+string([]rune(sentence)[:1])+colorReset+string([]rune(sentence)[1:]),
 	)
 
-	s += "\n     └"
+	s += "\n" + padding + "└"
 
 	for i := 0; i < 63; i++ {
 		s += "─"
@@ -52,13 +55,21 @@ func bigKeyb(m *model) string {
 	}
 
 	for _, v := range layouts[m.layout] {
+		var rangedSlice *[]rune
+
+		if m.shifted {
+			rangedSlice = &v.sKeys
+		} else {
+			rangedSlice = &v.keys
+		}
+
 		// top
 		{
 			// prefix
-			s += v.prefix
+			s += padding + v.prefix
 
 			// keys
-			for _, k := range v.keys {
+			for _, k := range *rangedSlice {
 				isClicked := m.selected == k
 
 				if isClicked {
@@ -77,15 +88,7 @@ func bigKeyb(m *model) string {
 		// midle
 		{
 			// prefix
-			s += strings.TrimPrefix(v.prefix, "\n")
-
-			var rangedSlice *[]rune
-
-			if m.shifted {
-				rangedSlice = &v.sKeys
-			} else {
-				rangedSlice = &v.keys
-			}
+			s += padding + strings.TrimPrefix(v.prefix, "\n")
 
 			// keys
 			for _, k := range *rangedSlice {
@@ -107,10 +110,10 @@ func bigKeyb(m *model) string {
 		// bottom
 		{
 			// prefix
-			s += v.prefix
+			s += padding + v.prefix
 
 			// keys
-			for _, k := range v.keys {
+			for _, k := range *rangedSlice {
 				isClicked := m.selected == k
 
 				if isClicked {
@@ -131,18 +134,28 @@ func bigKeyb(m *model) string {
 	// space
 	if m.selected == ' ' {
 		if m.selected == m.requested {
-			s += fmt.Sprintf("\t\t\t%s┌───────────────────────┐%s", colorCorrect, colorReset)
-			s += fmt.Sprintf("\n\t\t\t%s│                       │%s", colorCorrect, colorReset)
-			s += fmt.Sprintf("\n\t\t\t%s└───────────────────────┘%s", colorCorrect, colorReset)
+			s += fmt.Sprintf(padding+"                   %s┌───────────────────────┐%s",
+				colorCorrect, colorReset)
+
+			s += fmt.Sprintf("\n"+padding+"                   %s│                       │%s",
+				colorCorrect, colorReset)
+
+			s += fmt.Sprintf("\n"+padding+"                   %s└───────────────────────┘%s",
+				colorCorrect, colorReset)
 		} else {
-			s += fmt.Sprintf("\t\t\t%s┌───────────────────────┐%s", colorWrong, colorReset)
-			s += fmt.Sprintf("\n\t\t\t%s│                       │%s", colorWrong, colorReset)
-			s += fmt.Sprintf("\n\t\t\t%s└───────────────────────┘%s", colorWrong, colorReset)
+			s += fmt.Sprintf(padding+"                   %s┌───────────────────────┐%s",
+				colorWrong, colorReset)
+
+			s += fmt.Sprintf("\n"+padding+"                   %s│                       │%s",
+				colorWrong, colorReset)
+
+			s += fmt.Sprintf("\n"+padding+"                   %s└───────────────────────┘%s",
+				colorWrong, colorReset)
 		}
 	} else {
-		s += "\t\t\t┌───────────────────────┐"
-		s += "\n\t\t\t│                       │"
-		s += "\n\t\t\t└───────────────────────┘"
+		s += padding + "                   ┌───────────────────────┐"
+		s += "\n" + padding + "                   │                       │"
+		s += "\n" + padding + "                   └───────────────────────┘"
 	}
 
 	return s

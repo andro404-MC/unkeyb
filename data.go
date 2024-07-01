@@ -5,8 +5,9 @@ type model struct {
 	selected  rune
 	sentence  string
 
-	layout  string
-	shifted bool
+	layout   string
+	shifted  bool
+	termWidh int
 }
 
 type row struct {

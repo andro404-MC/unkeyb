@@ -7,12 +7,16 @@ import (
 )
 
 func bigKeyb(m *model) string {
-	var s, padding string
+	var s, hPadding, vPadding string
 	for i := 0; i < (m.termWidh-66)/2+1; i++ {
-		padding += " "
+		hPadding += " "
+	}
+	for i := 0; i < (m.termHeight-17)/2; i++ {
+		vPadding += "\n"
 	}
 
-	s += "\n" + padding + "┌"
+	s += vPadding
+	s += hPadding + "┌"
 
 	for i := 0; i < 63; i++ {
 		s += "─"
@@ -33,11 +37,11 @@ func bigKeyb(m *model) string {
 	}
 
 	s += fmt.Sprintf(
-		"\n"+padding+"│ %s",
+		"\n"+hPadding+"│ %s",
 		colorRequested+string([]rune(sentence)[:1])+colorReset+string([]rune(sentence)[1:]),
 	)
 
-	s += "\n" + padding + "└"
+	s += "\n" + hPadding + "└"
 
 	for i := 0; i < 63; i++ {
 		s += "─"
@@ -66,7 +70,7 @@ func bigKeyb(m *model) string {
 		// top
 		{
 			// prefix
-			s += padding + v.prefix
+			s += hPadding + v.prefix
 
 			// keys
 			for _, k := range *rangedSlice {
@@ -88,7 +92,7 @@ func bigKeyb(m *model) string {
 		// midle
 		{
 			// prefix
-			s += padding + strings.TrimPrefix(v.prefix, "\n")
+			s += hPadding + strings.TrimPrefix(v.prefix, "\n")
 
 			// keys
 			for _, k := range *rangedSlice {
@@ -110,7 +114,7 @@ func bigKeyb(m *model) string {
 		// bottom
 		{
 			// prefix
-			s += padding + v.prefix
+			s += hPadding + v.prefix
 
 			// keys
 			for _, k := range *rangedSlice {
@@ -134,28 +138,28 @@ func bigKeyb(m *model) string {
 	// space
 	if m.selected == ' ' {
 		if m.selected == m.requested {
-			s += fmt.Sprintf(padding+"                   %s┌───────────────────────┐%s",
+			s += fmt.Sprintf(hPadding+"                   %s┌───────────────────────┐%s",
 				colorCorrect, colorReset)
 
-			s += fmt.Sprintf("\n"+padding+"                   %s│                       │%s",
+			s += fmt.Sprintf("\n"+hPadding+"                   %s│                       │%s",
 				colorCorrect, colorReset)
 
-			s += fmt.Sprintf("\n"+padding+"                   %s└───────────────────────┘%s",
+			s += fmt.Sprintf("\n"+hPadding+"                   %s└───────────────────────┘%s",
 				colorCorrect, colorReset)
 		} else {
-			s += fmt.Sprintf(padding+"                   %s┌───────────────────────┐%s",
+			s += fmt.Sprintf(hPadding+"                   %s┌───────────────────────┐%s",
 				colorWrong, colorReset)
 
-			s += fmt.Sprintf("\n"+padding+"                   %s│                       │%s",
+			s += fmt.Sprintf("\n"+hPadding+"                   %s│                       │%s",
 				colorWrong, colorReset)
 
-			s += fmt.Sprintf("\n"+padding+"                   %s└───────────────────────┘%s",
+			s += fmt.Sprintf("\n"+hPadding+"                   %s└───────────────────────┘%s",
 				colorWrong, colorReset)
 		}
 	} else {
-		s += padding + "                   ┌───────────────────────┐"
-		s += "\n" + padding + "                   │                       │"
-		s += "\n" + padding + "                   └───────────────────────┘"
+		s += hPadding + "                   ┌───────────────────────┐"
+		s += "\n" + hPadding + "                   │                       │"
+		s += "\n" + hPadding + "                   └───────────────────────┘"
 	}
 
 	return s

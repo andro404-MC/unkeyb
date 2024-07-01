@@ -22,7 +22,13 @@ func Sentence() string {
 	for i := 0; i < wrdCnt; i++ {
 		s += lines[rand.Intn(len(lines))]
 		if i+1 != wrdCnt {
-			s += " "
+			if cos := rand.Intn(5); cos == 0 {
+				s += ", "
+			} else {
+				s += " "
+			}
+		} else {
+			s += "."
 		}
 	}
 

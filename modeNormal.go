@@ -8,6 +8,7 @@ import (
 func normalKeyb(m *model) string {
 	var s string
 	var sentence string
+
 	if utf8.RuneCountInString(m.sentence) > 39 {
 		sentence += string([]rune(m.sentence)[:39])
 	} else {
@@ -15,7 +16,7 @@ func normalKeyb(m *model) string {
 	}
 
 	s += fmt.Sprintf(
-		"\n     %s\n\n",
+		"%s\n\n",
 		colorRequested+string([]rune(sentence)[:1])+colorReset+string([]rune(sentence)[1:]),
 	)
 

@@ -4,50 +4,32 @@ import (
 	"fmt"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/charmbracelet/lipgloss"
 )
 
 func bigKeyb(m *model) string {
-	var s, hPadding, vPadding string
-	for i := 0; i < (m.termWidh-66)/2+1; i++ {
-		hPadding += " "
-	}
-	for i := 0; i < (m.termHeight-17)/2; i++ {
-		vPadding += "\n"
-	}
+	var s, sentence string
 
-	s += vPadding
-	s += hPadding + "┌"
-
-	for i := 0; i < 63; i++ {
-		s += "─"
-	}
-
-	s += "┐"
-
-	var sentence string
+	// Reducing or adding to the sentence to fit the box
 	if utf8.RuneCountInString(m.sentence) > 61 {
 		sentence += string([]rune(m.sentence)[:61])
-		sentence += " │"
 	} else {
 		sentence += m.sentence
 		for i := 0; i < 61-utf8.RuneCountInString(m.sentence); i++ {
 			sentence += " "
 		}
-		sentence += " │"
 	}
 
-	s += fmt.Sprintf(
-		"\n"+hPadding+"│ %s",
-		colorRequested+string([]rune(sentence)[:1])+colorReset+string([]rune(sentence)[1:]),
+	// Highlighting the first letter
+	sentence = colorRequested + string(
+		[]rune(sentence)[:1],
+	) + colorReset + string(
+		[]rune(sentence)[1:],
 	)
 
-	s += "\n" + hPadding + "└"
-
-	for i := 0; i < 63; i++ {
-		s += "─"
-	}
-
-	s += "┘\n"
+	// adding borders
+	s += styleBorderNormal.Render(sentence) + "\n"
 
 	for _, item := range layouts[m.layout] {
 		for _, shiftedKey := range item.sKeys {
@@ -70,7 +52,7 @@ func bigKeyb(m *model) string {
 		// top
 		{
 			// prefix
-			s += hPadding + v.prefix
+			s += v.prefix
 
 			// keys
 			for _, k := range *rangedSlice {
@@ -92,7 +74,7 @@ func bigKeyb(m *model) string {
 		// midle
 		{
 			// prefix
-			s += hPadding + strings.TrimPrefix(v.prefix, "\n")
+			s += strings.TrimPrefix(v.prefix, "\n")
 
 			// keys
 			for _, k := range *rangedSlice {
@@ -114,7 +96,7 @@ func bigKeyb(m *model) string {
 		// bottom
 		{
 			// prefix
-			s += hPadding + v.prefix
+			s += v.prefix
 
 			// keys
 			for _, k := range *rangedSlice {
@@ -138,29 +120,33 @@ func bigKeyb(m *model) string {
 	// space
 	if m.selected == ' ' {
 		if m.selected == m.requested {
-			s += fmt.Sprintf(hPadding+"                   %s┌───────────────────────┐%s",
+			s += fmt.Sprintf("                   %s┌───────────────────────┐%s",
 				colorCorrect, colorReset)
 
-			s += fmt.Sprintf("\n"+hPadding+"                   %s│                       │%s",
+			s += fmt.Sprintf("\n                   %s│                       │%s",
 				colorCorrect, colorReset)
 
-			s += fmt.Sprintf("\n"+hPadding+"                   %s└───────────────────────┘%s",
+			s += fmt.Sprintf("\n                   %s└───────────────────────┘%s",
 				colorCorrect, colorReset)
 		} else {
-			s += fmt.Sprintf(hPadding+"                   %s┌───────────────────────┐%s",
+			s += fmt.Sprintf("                   %s┌───────────────────────┐%s",
 				colorWrong, colorReset)
 
-			s += fmt.Sprintf("\n"+hPadding+"                   %s│                       │%s",
+			s += fmt.Sprintf("\n                   %s│                       │%s",
 				colorWrong, colorReset)
 
-			s += fmt.Sprintf("\n"+hPadding+"                   %s└───────────────────────┘%s",
+			s += fmt.Sprintf("\n                   %s└───────────────────────┘%s",
 				colorWrong, colorReset)
 		}
 	} else {
-		s += hPadding + "                   ┌───────────────────────┐"
-		s += "\n" + hPadding + "                   │                       │"
-		s += "\n" + hPadding + "                   └───────────────────────┘"
+		s += "                   ┌───────────────────────┐"
+		s += "\n                   │                       │"
+		s += "\n                   └───────────────────────┘"
 	}
 
-	return s
+	styleBody := lipgloss.NewStyle().
+		PaddingLeft((m.termWidh-66)/2 + 1).
+		PaddingTop((m.termHeight - strings.Count(s, "\n")) / 2)
+
+	return styleBody.Render(s)
 }

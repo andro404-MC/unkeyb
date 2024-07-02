@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"unicode/utf8"
 
 	"github.com/charmbracelet/lipgloss"
@@ -112,10 +113,13 @@ func bigKeyb(m *model) string {
 	visualHeight := lipgloss.Height(visual)
 
 	// Check if there is enough space
-	if m.termWidh < KeybWidth || m.termHeight < visualHeight {
-	} else {
-		visual = lipgloss.Place(m.termWidh, m.termHeight, lipgloss.Center, lipgloss.Center, visual)
+	if m.termWidth < KeybWidth || m.termHeight < visualHeight {
+		visual = "Terminal size too small:\n"
+		visual += fmt.Sprintf("Width = %d Height = %d\n\n", m.termWidth, m.termHeight)
+		visual += "Needed for current config:\n"
+		visual += fmt.Sprintf("Width = %d Height = %d", KeybWidth, visualHeight)
 	}
 
+	visual = lipgloss.Place(m.termWidth, m.termHeight, lipgloss.Center, lipgloss.Center, visual)
 	return visual
 }

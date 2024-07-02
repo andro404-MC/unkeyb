@@ -8,7 +8,7 @@ var layouts = map[string][]row{
 			keys:   []rune{'`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='},
 		},
 		{
-			prefix: 8,
+			prefix: 4,
 			sKeys:  []rune{'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}'},
 			keys:   []rune{'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']'},
 		},

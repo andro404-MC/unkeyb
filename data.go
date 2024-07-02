@@ -7,16 +7,14 @@ type model struct {
 	selected  rune
 	sentence  string
 
-	layout  string
-	shifted bool
+	layout string
 
 	termWidh   int
 	termHeight int
 }
 
 type row struct {
-	prefix  int
-	postfix string
+	prefix int
 
 	sKeys []rune
 	keys  []rune

@@ -10,7 +10,10 @@ import (
 )
 
 func bigKeyb(m *model) string {
+	// s        : String to draw
+	// sentence : Formated sentence to draw
 	var s, sentence string
+	var shifted bool
 
 	// Reducing or adding to the sentence to fit the box
 	if utf8.RuneCountInString(m.sentence) > 61 {
@@ -25,28 +28,32 @@ func bigKeyb(m *model) string {
 	// Highlighting the first letter
 	sentence = styleRequested.Render(string([]rune(sentence)[:1])) + string([]rune(sentence)[1:])
 
-	// adding borders
+	// Adding borders
 	s += styleBorderNormal.Render(sentence) + "\n"
 
+	// Checking if shifted
 	for _, item := range layouts[m.layout] {
 		for _, shiftedKey := range item.sKeys {
 			if shiftedKey == m.selected {
-				m.shifted = true
+				shifted = true
 				break
 			}
 		}
 	}
 
+	// Drawing Rows
 	for _, r := range layouts[m.layout] {
 		var rangedSlice *[]rune
 		var rowStrings []string
 
-		if m.shifted {
+		// Assigning appropriate slice to rangedSlice
+		if shifted {
 			rangedSlice = &r.sKeys
 		} else {
 			rangedSlice = &r.keys
 		}
 
+		// Creating keys boxes
 		for _, k := range *rangedSlice {
 			isClicked := m.selected == k
 			if isClicked {
@@ -60,6 +67,7 @@ func bigKeyb(m *model) string {
 			}
 		}
 
+		// Drawing keys boxes
 		s += lipgloss.NewStyle().MarginLeft(r.prefix).
 			Render(lipgloss.JoinHorizontal(lipgloss.Right, rowStrings...))
 		s += "\n"

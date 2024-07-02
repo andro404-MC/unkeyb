@@ -5,7 +5,7 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 
-	"gokeyb/generator"
+	"unkeyb/generator"
 )
 
 func bigKeyb(m *model) string {

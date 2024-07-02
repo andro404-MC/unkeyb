@@ -8,7 +8,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
-	"gokeyb/generator"
+	"unkeyb/generator"
 )
 
 func main() {

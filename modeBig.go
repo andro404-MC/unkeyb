@@ -10,26 +10,27 @@ import (
 )
 
 func bigKeyb(m *model) string {
-	// s        : String to draw
-	// sentence : Formated sentence to draw
-	var s, sentence string
+	// Layer
+	var layerSentence, layerKeyb, layerSpace string
 	var shifted bool
 
 	// Reducing or adding to the sentence to fit the box
 	if utf8.RuneCountInString(m.sentence) > 61 {
-		sentence += string([]rune(m.sentence)[:61])
+		layerSentence = string([]rune(m.sentence)[:61])
 	} else {
-		sentence += m.sentence
+		layerSentence = m.sentence
 		for i := 0; i < 61-utf8.RuneCountInString(m.sentence); i++ {
-			sentence += " "
+			layerSentence += " "
 		}
 	}
 
 	// Highlighting the first letter
-	sentence = styleRequested.Render(string([]rune(sentence)[:1])) + string([]rune(sentence)[1:])
+	layerSentence = styleRequested.Render(
+		string([]rune(layerSentence)[:1])) +
+		string([]rune(layerSentence)[1:])
 
 	// Adding borders
-	s += styleBorderNormal.Render(sentence) + "\n"
+	layerSentence = styleBorderNormal.Render(layerSentence)
 
 	// Checking if shifted
 	for _, item := range layouts[m.layout] {
@@ -42,9 +43,10 @@ func bigKeyb(m *model) string {
 	}
 
 	// Drawing Rows
+	var rows []string
 	for _, r := range layouts[m.layout] {
 		var rangedSlice *[]rune
-		var rowStrings []string
+		var keys []string
 
 		// Assigning appropriate slice to rangedSlice
 		if shifted {
@@ -58,36 +60,46 @@ func bigKeyb(m *model) string {
 			isClicked := m.selected == k
 			if isClicked {
 				if k == m.requested {
-					rowStrings = append(rowStrings, styleBorderCorrect.Render(string(k)))
+					keys = append(keys, styleBorderCorrect.Render(string(k)))
 				} else {
-					rowStrings = append(rowStrings, styleBorderWrong.Render(string(k)))
+					keys = append(keys, styleBorderWrong.Render(string(k)))
 				}
 			} else {
-				rowStrings = append(rowStrings, styleBorderNormal.Render(string(k)))
+				keys = append(keys, styleBorderNormal.Render(string(k)))
 			}
 		}
 
-		// Drawing keys boxes
-		s += lipgloss.NewStyle().MarginLeft(r.prefix).
-			Render(lipgloss.JoinHorizontal(lipgloss.Right, rowStrings...))
-		s += "\n"
+		// Merging to row
+		rows = append(rows,
+			lipgloss.NewStyle().
+				MarginLeft(r.prefix).
+				Render(lipgloss.JoinHorizontal(lipgloss.Right, keys...)),
+		)
 	}
+
+	// Mergin rows to the Keyboard layer
+	layerKeyb = lipgloss.JoinVertical(lipgloss.Left, rows...)
 
 	// Space bar
 	if m.selected == ' ' {
 		if m.selected == m.requested {
-			s += styleBorderCorrect.MarginLeft(19).Render(generator.Spaces(21))
+			layerSpace = styleBorderCorrect.MarginLeft(19).Render(generator.Spaces(21))
 		} else {
-			s += styleBorderWrong.MarginLeft(19).Render(generator.Spaces(21))
+			layerSpace = styleBorderWrong.MarginLeft(19).Render(generator.Spaces(21))
 		}
 	} else {
-		s += styleBorderNormal.MarginLeft(19).Render(generator.Spaces(21))
+		layerSpace += styleBorderNormal.MarginLeft(19).Render(generator.Spaces(21))
 	}
 
-	// Defining the body style with centering
-	styleBody := lipgloss.NewStyle().
-		PaddingLeft((m.termWidh-66)/2 + 1).
-		PaddingTop((m.termHeight - strings.Count(s, "\n")) / 2)
+	// Merging layers
+	visual := lipgloss.JoinVertical(lipgloss.Left, layerSentence, layerKeyb, layerSpace)
 
-	return styleBody.Render(s)
+	// Calculating visual Height and Widh
+	visualWidh := (m.termWidh-66)/2 + 1
+	visualHeight := (m.termHeight - strings.Count(visual, "\n")) / 2
+
+	// Defining the body style with centering
+	styleBody := lipgloss.NewStyle().MarginLeft(visualWidh).MarginTop(visualHeight)
+
+	return styleBody.Render(visual)
 }

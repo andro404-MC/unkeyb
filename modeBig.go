@@ -1,7 +1,6 @@
 package main
 
 import (
-	"strings"
 	"unicode/utf8"
 
 	"github.com/charmbracelet/lipgloss"
@@ -10,27 +9,13 @@ import (
 )
 
 func bigKeyb(m *model) string {
-	// Layer
+	// Layers
 	var layerSentence, layerKeyb, layerSpace string
 	var shifted bool
 
-	// Reducing or adding to the sentence to fit the box
-	if utf8.RuneCountInString(m.sentence) > 61 {
-		layerSentence = string([]rune(m.sentence)[:61])
-	} else {
-		layerSentence = m.sentence
-		for i := 0; i < 61-utf8.RuneCountInString(m.sentence); i++ {
-			layerSentence += " "
-		}
-	}
-
-	// Highlighting the first letter
-	layerSentence = styleRequested.Render(
-		string([]rune(layerSentence)[:1])) +
-		string([]rune(layerSentence)[1:])
-
-	// Adding borders
-	layerSentence = styleBorderNormal.Render(layerSentence)
+	//////////////
+	// Keyboard //
+	//////////////
 
 	// Checking if shifted
 	for _, item := range layouts[m.layout] {
@@ -80,7 +65,10 @@ func bigKeyb(m *model) string {
 	// Mergin rows to the Keyboard layer
 	layerKeyb = lipgloss.JoinVertical(lipgloss.Left, rows...)
 
-	// Space bar
+	///////////
+	// Space //
+	///////////
+
 	if m.selected == ' ' {
 		if m.selected == m.requested {
 			layerSpace = styleBorderCorrect.MarginLeft(19).Render(generator.Spaces(21))
@@ -91,15 +79,73 @@ func bigKeyb(m *model) string {
 		layerSpace += styleBorderNormal.MarginLeft(19).Render(generator.Spaces(21))
 	}
 
-	// Merging layers
+	//////////////
+	// Sentence //
+	//////////////
+
+	// Calculating the keyb Height and Width
+	KeybWidth := lipgloss.Width(layerKeyb)
+
+	// Reducing or adding to the sentence to fit the box
+	if utf8.RuneCountInString(m.sentence) > KeybWidth-4 {
+		layerSentence = string([]rune(m.sentence)[:KeybWidth-4])
+	} else {
+		layerSentence = m.sentence
+		for i := 0; i < 61-utf8.RuneCountInString(m.sentence); i++ {
+			layerSentence += " "
+		}
+	}
+
+	// Highlighting the first letter
+	layerSentence = styleRequested.Render(
+		string([]rune(layerSentence)[:1])) +
+		string([]rune(layerSentence)[1:])
+
+	// Adding borders
+	layerSentence = styleBorderNormal.Render(layerSentence)
+
+	// Reducing or adding to the sentence to fit the box
+	if utf8.RuneCountInString(m.sentence) > 61 {
+		layerSentence = string([]rune(m.sentence)[:61])
+	} else {
+		layerSentence = m.sentence
+		for i := 0; i < 61-utf8.RuneCountInString(m.sentence); i++ {
+			layerSentence += " "
+		}
+	}
+
+	// Highlighting the first letter
+	layerSentence = styleRequested.Render(
+		string([]rune(layerSentence)[:1])) +
+		string([]rune(layerSentence)[1:])
+
+	// Adding borders
+	layerSentence = styleBorderNormal.Render(layerSentence)
+
+	// Reducing or adding to the sentence to fit the box
+	if utf8.RuneCountInString(m.sentence) > 61 {
+		layerSentence = string([]rune(m.sentence)[:61])
+	} else {
+		layerSentence = m.sentence
+		for i := 0; i < 61-utf8.RuneCountInString(m.sentence); i++ {
+			layerSentence += " "
+		}
+	}
+
+	// Highlighting the first letter
+	layerSentence = styleRequested.Render(
+		string([]rune(layerSentence)[:1])) +
+		string([]rune(layerSentence)[1:])
+
+	// Adding borders
+	layerSentence = styleBorderNormal.Render(layerSentence)
+
+	/////////////////////////
+	// Merging & Centering //
+	/////////////////////////
+
 	visual := lipgloss.JoinVertical(lipgloss.Left, layerSentence, layerKeyb, layerSpace)
+	visual = lipgloss.Place(m.termWidh, m.termHeight, lipgloss.Center, lipgloss.Center, visual)
 
-	// Calculating visual Height and Widh
-	visualWidh := (m.termWidh-66)/2 + 1
-	visualHeight := (m.termHeight - strings.Count(visual, "\n")) / 2
-
-	// Defining the body style with centering
-	styleBody := lipgloss.NewStyle().MarginLeft(visualWidh).MarginTop(visualHeight)
-
-	return styleBody.Render(visual)
+	return visual
 }

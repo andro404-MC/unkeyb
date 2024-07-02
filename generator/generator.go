@@ -6,12 +6,12 @@ import (
 	"strings"
 )
 
-//go:embed english-words/words.txt
+//go:embed google-10000-english/google-10000-english-no-swears.txt
 var f embed.FS
 var lines []string
 
 func Load() {
-	data, _ := f.ReadFile("english-words/words.txt")
+	data, _ := f.ReadFile("google-10000-english/google-10000-english-no-swears.txt")
 	lines = strings.Split(string(data), "\n")
 }
 

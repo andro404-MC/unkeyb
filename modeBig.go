@@ -91,9 +91,7 @@ func bigKeyb(m *model) string {
 		layerSentence = string([]rune(m.sentence)[:KeybWidth-4])
 	} else {
 		layerSentence = m.sentence
-		for i := 0; i < 61-utf8.RuneCountInString(m.sentence); i++ {
-			layerSentence += " "
-		}
+		layerSentence += generator.Spaces(-utf8.RuneCountInString(m.sentence))
 	}
 
 	// Highlighting the first letter

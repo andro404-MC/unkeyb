@@ -9,7 +9,7 @@ type model struct {
 
 	layout string
 
-	termWidh   int
+	termWidth  int
 	termHeight int
 }
 

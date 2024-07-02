@@ -38,11 +38,13 @@ var (
 
 	styleBorderCorrect = lipgloss.NewStyle().
 				BorderStyle(lipgloss.NormalBorder()).
+				BorderForeground(lipgloss.ANSIColor(8)).
 				PaddingLeft(1).PaddingRight(1).
 				Foreground(lipgloss.ANSIColor(8))
 
 	styleBorderWrong = lipgloss.NewStyle().
 				BorderStyle(lipgloss.NormalBorder()).
+				BorderForeground(lipgloss.ANSIColor(1)).
 				PaddingLeft(1).PaddingRight(1).
 				Foreground(lipgloss.ANSIColor(1))
 )

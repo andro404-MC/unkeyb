@@ -117,31 +117,14 @@ func bigKeyb(m *model) string {
 		}
 	}
 
-	// space
 	if m.selected == ' ' {
 		if m.selected == m.requested {
-			s += fmt.Sprintf("                   %s┌───────────────────────┐%s",
-				colorCorrect, colorReset)
-
-			s += fmt.Sprintf("\n                   %s│                       │%s",
-				colorCorrect, colorReset)
-
-			s += fmt.Sprintf("\n                   %s└───────────────────────┘%s",
-				colorCorrect, colorReset)
+			s += styleBorderCorrect.MarginLeft(19).Render("                     ")
 		} else {
-			s += fmt.Sprintf("                   %s┌───────────────────────┐%s",
-				colorWrong, colorReset)
-
-			s += fmt.Sprintf("\n                   %s│                       │%s",
-				colorWrong, colorReset)
-
-			s += fmt.Sprintf("\n                   %s└───────────────────────┘%s",
-				colorWrong, colorReset)
+			s += styleBorderWrong.MarginLeft(19).Render("                     ")
 		}
 	} else {
-		s += "                   ┌───────────────────────┐"
-		s += "\n                   │                       │"
-		s += "\n                   └───────────────────────┘"
+		s += styleBorderNormal.MarginLeft(19).Render("                     ")
 	}
 
 	styleBody := lipgloss.NewStyle().

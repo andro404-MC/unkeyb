@@ -15,7 +15,7 @@ type model struct {
 }
 
 type row struct {
-	prefix  string
+	prefix  int
 	postfix string
 
 	sKeys []rune
@@ -24,29 +24,25 @@ type row struct {
 
 var keyList []rune
 
-const (
-	colorCorrect   = "\033[38;5;8m"
-	colorWrong     = "\033[38;5;1m"
-	colorRequested = "\033[4m"
-	colorReset     = "\033[0m"
-)
-
 var (
 	styleBorderNormal = lipgloss.NewStyle().
 				BorderStyle(lipgloss.NormalBorder()).
 				PaddingLeft(1).PaddingRight(1)
 
 	styleBorderCorrect = lipgloss.NewStyle().
-				BorderStyle(lipgloss.NormalBorder()).
+				BorderStyle(lipgloss.ThickBorder()).
 				BorderForeground(lipgloss.ANSIColor(8)).
 				PaddingLeft(1).PaddingRight(1).
 				Foreground(lipgloss.ANSIColor(8))
 
 	styleBorderWrong = lipgloss.NewStyle().
-				BorderStyle(lipgloss.NormalBorder()).
+				BorderStyle(lipgloss.ThickBorder()).
 				BorderForeground(lipgloss.ANSIColor(1)).
 				PaddingLeft(1).PaddingRight(1).
 				Foreground(lipgloss.ANSIColor(1))
+
+	styleRequested = lipgloss.NewStyle().
+			Underline(true)
 )
 
 func generateList(layout string) {

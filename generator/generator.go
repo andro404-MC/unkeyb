@@ -34,3 +34,11 @@ func Sentence() string {
 
 	return s
 }
+
+func Spaces(count int) string {
+	var s string
+	for i := 0; i < count; i++ {
+		s += " "
+	}
+	return s
+}

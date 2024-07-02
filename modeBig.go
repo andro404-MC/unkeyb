@@ -1,11 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 	"unicode/utf8"
 
 	"github.com/charmbracelet/lipgloss"
+
+	"gokeyb/generator"
 )
 
 func bigKeyb(m *model) string {
@@ -22,11 +23,7 @@ func bigKeyb(m *model) string {
 	}
 
 	// Highlighting the first letter
-	sentence = colorRequested + string(
-		[]rune(sentence)[:1],
-	) + colorReset + string(
-		[]rune(sentence)[1:],
-	)
+	sentence = styleRequested.Render(string([]rune(sentence)[:1])) + string([]rune(sentence)[1:])
 
 	// adding borders
 	s += styleBorderNormal.Render(sentence) + "\n"
@@ -40,93 +37,46 @@ func bigKeyb(m *model) string {
 		}
 	}
 
-	for _, v := range layouts[m.layout] {
+	for _, r := range layouts[m.layout] {
 		var rangedSlice *[]rune
+		var rowStrings []string
 
 		if m.shifted {
-			rangedSlice = &v.sKeys
+			rangedSlice = &r.sKeys
 		} else {
-			rangedSlice = &v.keys
+			rangedSlice = &r.keys
 		}
 
-		// top
-		{
-			// prefix
-			s += v.prefix
-
-			// keys
-			for _, k := range *rangedSlice {
-				isClicked := m.selected == k
-
-				if isClicked {
-					if k == m.requested {
-						s += fmt.Sprintf("%s%s%s", colorCorrect, "┌───┐", colorReset)
-					} else {
-						s += fmt.Sprintf("%s%s%s", colorWrong, "┌───┐", colorReset)
-					}
+		for _, k := range *rangedSlice {
+			isClicked := m.selected == k
+			if isClicked {
+				if k == m.requested {
+					rowStrings = append(rowStrings, styleBorderCorrect.Render(string(k)))
 				} else {
-					s += "┌───┐"
+					rowStrings = append(rowStrings, styleBorderWrong.Render(string(k)))
 				}
-			}
-
-			s += "\n"
-		}
-		// midle
-		{
-			// prefix
-			s += strings.TrimPrefix(v.prefix, "\n")
-
-			// keys
-			for _, k := range *rangedSlice {
-				isClicked := m.selected == k
-
-				if isClicked {
-					if k == m.requested {
-						s += fmt.Sprintf("%s│ %c │%s", colorCorrect, k, colorReset)
-					} else {
-						s += fmt.Sprintf("%s│ %c │%s", colorWrong, k, colorReset)
-					}
-				} else {
-					s += fmt.Sprintf("│ %c │", k)
-				}
+			} else {
+				rowStrings = append(rowStrings, styleBorderNormal.Render(string(k)))
 			}
 		}
+
+		s += lipgloss.NewStyle().MarginLeft(r.prefix).
+			Render(lipgloss.JoinHorizontal(lipgloss.Right, rowStrings...))
 		s += "\n"
-
-		// bottom
-		{
-			// prefix
-			s += v.prefix
-
-			// keys
-			for _, k := range *rangedSlice {
-				isClicked := m.selected == k
-
-				if isClicked {
-					if k == m.requested {
-						s += fmt.Sprintf("%s%s%s", colorCorrect, "└───┘", colorReset)
-					} else {
-						s += fmt.Sprintf("%s%s%s", colorWrong, "└───┘", colorReset)
-					}
-				} else {
-					s += "└───┘"
-				}
-			}
-
-			s += "\n"
-		}
 	}
 
+	// Space bar
 	if m.selected == ' ' {
 		if m.selected == m.requested {
-			s += styleBorderCorrect.MarginLeft(19).Render("                     ")
+			s += styleBorderCorrect.MarginLeft(19).Render(generator.Spaces(21))
 		} else {
-			s += styleBorderWrong.MarginLeft(19).Render("                     ")
+			s += styleBorderWrong.MarginLeft(19).Render(generator.Spaces(21))
 		}
 	} else {
-		s += styleBorderNormal.MarginLeft(19).Render("                     ")
+		s += styleBorderNormal.MarginLeft(19).Render(generator.Spaces(21))
 	}
 
+	// Defining the body style with centering
 	styleBody := lipgloss.NewStyle().
 		PaddingLeft((m.termWidh-66)/2 + 1).
 		PaddingTop((m.termHeight - strings.Count(s, "\n")) / 2)

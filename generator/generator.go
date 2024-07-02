@@ -2,6 +2,7 @@ package generator
 
 import (
 	"embed"
+	"fmt"
 	"math/rand"
 	"strings"
 )
@@ -9,6 +10,8 @@ import (
 //go:embed google-10000-english/google-10000-english-no-swears.txt
 var f embed.FS
 var lines []string
+
+const AnsiReset = "\033[0m"
 
 func Load() {
 	data, _ := f.ReadFile("google-10000-english/google-10000-english-no-swears.txt")
@@ -41,4 +44,8 @@ func Spaces(count int) string {
 		s += " "
 	}
 	return s
+}
+
+func AnsiToString(num uint) string {
+	return fmt.Sprintf("\033[38;5;%dm", num)
 }

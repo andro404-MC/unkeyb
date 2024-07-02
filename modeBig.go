@@ -92,7 +92,7 @@ func bigKeyb(m *model) string {
 		layerSentence = string([]rune(m.sentence)[:KeybWidth-4])
 	} else {
 		layerSentence = m.sentence
-		layerSentence += generator.Spaces(-utf8.RuneCountInString(m.sentence))
+		layerSentence += generator.Spaces(KeybWidth - 4 - utf8.RuneCountInString(m.sentence))
 	}
 
 	// Highlighting the first letter
@@ -115,7 +115,22 @@ func bigKeyb(m *model) string {
 	// Check if there is enough space
 	if m.termWidth < KeybWidth || m.termHeight < visualHeight {
 		visual = "Terminal size too small:\n"
-		visual += fmt.Sprintf("Width = %d Height = %d\n\n", m.termWidth, m.termHeight)
+
+		// Coloring the small dimension
+		if m.termWidth < KeybWidth {
+			visual += fmt.Sprintf("Width = %s%d%s",
+				generator.AnsiToString(1), m.termWidth, generator.AnsiReset)
+		} else {
+			visual += fmt.Sprintf("Width = %d", m.termWidth)
+		}
+
+		if m.termHeight < visualHeight {
+			visual += fmt.Sprintf(" Height = %s%d%s\n\n",
+				generator.AnsiToString(1), m.termHeight, generator.AnsiReset)
+		} else {
+			visual += fmt.Sprintf(" Height = %d\n\n", m.termHeight)
+		}
+
 		visual += "Needed for current config:\n"
 		visual += fmt.Sprintf("Width = %d Height = %d", KeybWidth, visualHeight)
 	}

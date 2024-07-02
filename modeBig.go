@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"unicode/utf8"
 
 	"github.com/charmbracelet/lipgloss"
@@ -103,38 +102,11 @@ func bigKeyb(m *model) string {
 	// Adding borders
 	layerSentence = styleBorderNormal.Render(layerSentence)
 
-	//////////////////////////
-	// Merging & Displaying //
-	//////////////////////////
+	////////////////////
+	// Merging layers //
+	////////////////////
 
 	visual := lipgloss.JoinVertical(lipgloss.Left, layerSentence, layerKeyb, layerSpace)
 
-	// Getting visual height
-	visualHeight := lipgloss.Height(visual)
-
-	// Check if there is enough space
-	if m.termWidth < KeybWidth || m.termHeight < visualHeight {
-		visual = "Terminal size too small:\n"
-
-		// Coloring the small dimension
-		if m.termWidth < KeybWidth {
-			visual += fmt.Sprintf("Width = %s%d%s",
-				generator.AnsiToString(1), m.termWidth, generator.AnsiReset)
-		} else {
-			visual += fmt.Sprintf("Width = %d", m.termWidth)
-		}
-
-		if m.termHeight < visualHeight {
-			visual += fmt.Sprintf(" Height = %s%d%s\n\n",
-				generator.AnsiToString(1), m.termHeight, generator.AnsiReset)
-		} else {
-			visual += fmt.Sprintf(" Height = %d\n\n", m.termHeight)
-		}
-
-		visual += "Needed for current config:\n"
-		visual += fmt.Sprintf("Width = %d Height = %d", KeybWidth, visualHeight)
-	}
-
-	visual = lipgloss.Place(m.termWidth, m.termHeight, lipgloss.Center, lipgloss.Center, visual)
 	return visual
 }

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 
 	"gokeyb/generator"
 )
@@ -58,5 +59,40 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	return bigKeyb(&m)
+	// Getting the big template (more comming soon)
+	visual := bigKeyb(&m)
+
+	// Getting visual height & width
+	visualWidth := lipgloss.Width(visual)
+	visualHeight := lipgloss.Height(visual)
+
+	// Check if there is enough space
+	if m.termWidth < visualWidth || m.termHeight < visualHeight {
+		visual = "Terminal size too small:\n"
+
+		// Coloring
+		// Width
+		if m.termWidth < visualWidth {
+			visual += fmt.Sprintf("Width = %s%d%s",
+				generator.AnsiToString(1), m.termWidth, generator.AnsiReset)
+		} else {
+			visual += fmt.Sprintf("Width = %s%d%s",
+				generator.AnsiToString(2), m.termWidth, generator.AnsiReset)
+		}
+
+		// Height
+		if m.termHeight < visualHeight {
+			visual += fmt.Sprintf(" Height = %s%d%s\n\n",
+				generator.AnsiToString(1), m.termHeight, generator.AnsiReset)
+		} else {
+			visual += fmt.Sprintf(" Height = %s%d%s\n\n",
+				generator.AnsiToString(2), m.termHeight, generator.AnsiReset)
+		}
+
+		visual += "Needed for current config:\n"
+		visual += fmt.Sprintf("Width = %d Height = %d", visualWidth, visualHeight)
+	}
+
+	visual = lipgloss.Place(m.termWidth, m.termHeight, lipgloss.Center, lipgloss.Center, visual)
+	return visual
 }

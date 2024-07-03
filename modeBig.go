@@ -1,8 +1,6 @@
 package main
 
 import (
-	"unicode/utf8"
-
 	"github.com/charmbracelet/lipgloss"
 
 	"unkeyb/generator"
@@ -86,13 +84,8 @@ func bigKeyb(m *model) string {
 	// Calculating the keyb Height and Width
 	KeybWidth := lipgloss.Width(layerKeyb)
 
-	// Reducing or adding to the sentence to fit the box
-	if utf8.RuneCountInString(m.sentence) > KeybWidth-4 {
-		layerSentence = string([]rune(m.sentence)[:KeybWidth-4])
-	} else {
-		layerSentence = m.sentence
-		layerSentence += generator.Spaces(KeybWidth - 4 - utf8.RuneCountInString(m.sentence))
-	}
+	// Fixed size
+	layerSentence = generator.FixedSize(m.sentence, KeybWidth-4)
 
 	// Highlighting the first letter
 	layerSentence = styleRequested.Render(

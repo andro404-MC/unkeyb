@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
+	"unicode/utf8"
 )
 
 //go:embed google-10000-english/google-10000-english-no-swears.txt
@@ -48,4 +49,15 @@ func Spaces(count int) string {
 
 func AnsiToString(num uint) string {
 	return fmt.Sprintf("\033[38;5;%dm", num)
+}
+
+func FixedSize(text string, size int) string {
+	var s string
+	if utf8.RuneCountInString(text) > size {
+		s = string([]rune(text)[:size])
+	} else {
+		s = text
+		s += Spaces(size - utf8.RuneCountInString(text))
+	}
+	return s
 }

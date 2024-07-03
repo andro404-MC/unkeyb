@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -18,7 +19,9 @@ func main() {
 	m.layout = "gb"
 	generateList(m.layout)
 
+	m.fistChar = true
 	m.sentence = generator.Sentence()
+	m.wordCount = strings.Count(m.sentence, " ") + 1
 
 	p := tea.NewProgram(m)
 	if _, err := p.Run(); err != nil {
@@ -38,10 +41,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEnter:
-			// new Sentence creation
+			// new Sentence creation and States reset
 			if m.done {
 				m.sentence = generator.Sentence()
+				m.wordCount = strings.Count(m.sentence, " ") + 1
 				m.done = false
+				m.fistChar = true
 			}
 
 		case tea.KeyEscape, tea.KeyCtrlC:
@@ -50,6 +55,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case tea.KeyRunes, tea.KeySpace:
 			if !m.done {
+				// set the time when the first character is typed
+				if m.fistChar {
+					m.startTime = time.Now().Unix()
+					m.fistChar = false
+				}
+
 				// Register the typed character
 				m.selected = msg.Runes[0]
 
@@ -60,10 +71,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.selected == m.requested {
 					m.sentence = strings.TrimPrefix(m.sentence, string([]rune(m.sentence)[0]))
 				}
-			}
 
-			if m.sentence == "" {
-				m.done = true
+				// Calcuating wpm
+				if m.sentence == "" {
+					bTime := float32(time.Now().Unix()-m.startTime) / 60
+					m.wpm = float32(float32(m.wordCount) / bTime)
+					m.done = true
+				}
 			}
 		}
 

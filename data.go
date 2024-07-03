@@ -1,18 +1,25 @@
 package main
 
-import "github.com/charmbracelet/lipgloss"
+import (
+	"github.com/charmbracelet/lipgloss"
+)
 
 type model struct {
+	layout   string
+	sentence string
+
+	wordCount int
+	startTime int64
+	wpm       float32
+
 	requested rune
 	selected  rune
-	sentence  string
-
-	layout string
 
 	termWidth  int
 	termHeight int
 
-	done bool
+	done     bool
+	fistChar bool
 }
 
 type row struct {

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/charmbracelet/lipgloss"
 
 	"unkeyb/generator"
@@ -95,7 +97,7 @@ func bigKeyb(m *model) string {
 	// Request Enter click if done
 	if m.done {
 		layerSentence = lipgloss.PlaceHorizontal(KeybWidth-4, lipgloss.Center,
-			"Press ENTER",
+			fmt.Sprintf("wpm :%.2f  Press ENTER", m.wpm),
 		)
 	}
 
@@ -106,7 +108,12 @@ func bigKeyb(m *model) string {
 	// Merging layers //
 	////////////////////
 
-	visual := lipgloss.JoinVertical(lipgloss.Left, layerSentence, layerKeyb, layerSpace)
+	visual := lipgloss.JoinVertical(
+		lipgloss.Left,
+		layerSentence,
+		layerKeyb,
+		layerSpace,
+	)
 
 	return visual
 }

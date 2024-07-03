@@ -97,7 +97,7 @@ func bigKeyb(m *model) string {
 	// Request Enter click if done
 	if m.done {
 		layerSentence = lipgloss.PlaceHorizontal(KeybWidth-4, lipgloss.Center,
-			fmt.Sprintf("wpm :%.2f  Press ENTER", m.wpm),
+			fmt.Sprintf("WPM:%.2f Press Enter", m.wpm),
 		)
 	}
 

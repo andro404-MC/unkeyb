@@ -15,14 +15,15 @@ import (
 func main() {
 	generator.Load()
 
+	// Initializing the model
 	m := model{}
 	m.layout = "gb"
 	generateList(m.layout)
-
 	m.fistChar = true
 	m.sentence = generator.Sentence()
 	m.wordCount = strings.Count(m.sentence, " ") + 1
 
+	// Stating tea loop
 	p := tea.NewProgram(m)
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("WHAAAAAT ITS BROKEN ALREAAADY ???\ndetails: %v", err)
@@ -125,6 +126,7 @@ func (m model) View() string {
 		visual += fmt.Sprintf("Width = %d Height = %d", visualWidth, visualHeight)
 	}
 
+	// Centering
 	visual = lipgloss.Place(m.termWidth, m.termHeight, lipgloss.Center, lipgloss.Center, visual)
 	return visual
 }

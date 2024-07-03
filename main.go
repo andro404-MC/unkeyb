@@ -38,18 +38,26 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEnter:
+			// new Sentence creation
 			if m.done {
 				m.sentence = generator.Sentence()
 				m.done = false
 			}
+
 		case tea.KeyEscape, tea.KeyCtrlC:
+			// bay bay
 			return m, tea.Quit
+
 		case tea.KeyRunes, tea.KeySpace:
 			if !m.done {
+				// Register the typed character
 				m.selected = msg.Runes[0]
 
-				if m.selected == []rune(m.sentence)[0] {
-					m.requested = []rune(m.sentence)[0]
+				// Set the Requested character
+				m.requested = []rune(m.sentence)[0]
+
+				// Delete the first character if correct
+				if m.selected == m.requested {
 					m.sentence = strings.TrimPrefix(m.sentence, string([]rune(m.sentence)[0]))
 				}
 			}
@@ -89,7 +97,6 @@ func (m model) View() string {
 			visual += fmt.Sprintf("Width = %s%d%s",
 				generator.AnsiToString(2), m.termWidth, generator.AnsiReset)
 		}
-
 		// Height
 		if m.termHeight < visualHeight {
 			visual += fmt.Sprintf(" Height = %s%d%s\n\n",
@@ -99,6 +106,7 @@ func (m model) View() string {
 				generator.AnsiToString(2), m.termHeight, generator.AnsiReset)
 		}
 
+		// Required size
 		visual += "Needed for current config:\n"
 		visual += fmt.Sprintf("Width = %d Height = %d", visualWidth, visualHeight)
 	}

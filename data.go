@@ -11,6 +11,8 @@ type model struct {
 
 	termWidth  int
 	termHeight int
+
+	done bool
 }
 
 type row struct {

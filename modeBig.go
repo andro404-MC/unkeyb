@@ -92,6 +92,13 @@ func bigKeyb(m *model) string {
 		string([]rune(layerSentence)[:1])) +
 		string([]rune(layerSentence)[1:])
 
+	// Request Enter click if done
+	if m.done {
+		layerSentence = lipgloss.PlaceHorizontal(KeybWidth-4, lipgloss.Center,
+			"Press ENTER",
+		)
+	}
+
 	// Adding borders
 	layerSentence = styleBorderNormal.Render(layerSentence)
 

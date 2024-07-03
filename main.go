@@ -32,24 +32,34 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	// Checking msg type
 	switch msg := msg.(type) {
+	// Keyboard input
 	case tea.KeyMsg:
 		switch msg.Type {
+		case tea.KeyEnter:
+			if m.done {
+				m.sentence = generator.Sentence()
+				m.done = false
+			}
 		case tea.KeyEscape, tea.KeyCtrlC:
 			return m, tea.Quit
 		case tea.KeyRunes, tea.KeySpace:
-			m.selected = msg.Runes[0]
+			if !m.done {
+				m.selected = msg.Runes[0]
 
-			if m.selected == []rune(m.sentence)[0] {
-				m.requested = []rune(m.sentence)[0]
-				m.sentence = strings.TrimPrefix(m.sentence, string([]rune(m.sentence)[0]))
+				if m.selected == []rune(m.sentence)[0] {
+					m.requested = []rune(m.sentence)[0]
+					m.sentence = strings.TrimPrefix(m.sentence, string([]rune(m.sentence)[0]))
+				}
 			}
 
 			if m.sentence == "" {
-				m.sentence = generator.Sentence()
+				m.done = true
 			}
 		}
 
+	// Terminal resize
 	case tea.WindowSizeMsg:
 		m.termWidth = msg.Width
 		m.termHeight = msg.Height

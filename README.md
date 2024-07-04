@@ -35,7 +35,3 @@ To run :
 ```
 $ unkeyb
 ```
-
-## Todo :
-
-None for now :)

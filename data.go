@@ -8,7 +8,7 @@ type model struct {
 	layout   string
 	sentence string
 
-	wordCount int
+	runeCount int
 	startTime int64
 	wpm       float32
 

@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -21,7 +22,7 @@ func main() {
 	generateList(m.layout)
 	m.fistChar = true
 	m.sentence = generator.Sentence()
-	m.wordCount = strings.Count(m.sentence, " ") + 1
+	m.runeCount = utf8.RuneCountInString(m.sentence)
 
 	// Stating tea loop
 	p := tea.NewProgram(m)
@@ -45,7 +46,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// new Sentence creation and States reset
 			if m.done {
 				m.sentence = generator.Sentence()
-				m.wordCount = strings.Count(m.sentence, " ") + 1
+				m.runeCount = utf8.RuneCountInString(m.sentence)
 				m.done = false
 				m.fistChar = true
 			}
@@ -76,7 +77,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				// Calcuating wpm
 				if m.sentence == "" {
 					bTime := float32(time.Now().Unix()-m.startTime) / 60
-					m.wpm = float32(float32(m.wordCount) / bTime)
+					m.wpm = float32((float32(m.runeCount) / 5) / bTime)
 					m.done = true
 				}
 			}

@@ -4,6 +4,9 @@ A simple TUI keyboard typing speed test built using Go and the bubbletea framewo
 
 [preview.webm](https://github.com/andro404-MC/unkeyb/assets/94703538/d897f056-8a95-46af-a7ab-34f2d410ab38)
 
+> [!NOTE]
+> currently only supporting english and the gb layout.
+
 ## Requirement :
 
 Nothing unless :

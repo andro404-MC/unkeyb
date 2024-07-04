@@ -21,7 +21,7 @@ func Load() {
 
 func Sentence() string {
 	var s string
-	wrdCnt := rand.Intn(30) + 21
+	wrdCnt := rand.Intn(20-10) + 10
 
 	for i := 0; i < wrdCnt; i++ {
 		s += lines[rand.Intn(len(lines))]

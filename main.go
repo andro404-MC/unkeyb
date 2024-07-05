@@ -15,11 +15,19 @@ import (
 )
 
 func main() {
-	var lang, lay string
+	var leyNames, lang, lay string
+
+	// Getting Layout names
+	for k := range layouts {
+		leyNames += k + ","
+	}
+
+	// Trimming last char
+	leyNames = strings.TrimSuffix(leyNames, ",")
 
 	// Handling flags
 	flag.StringVar(&lang, "l", "en", "Language (en)")
-	flag.StringVar(&lay, "k", "us", "layout (us,gb,us-dvorak)")
+	flag.StringVar(&lay, "k", "qwerty", fmt.Sprintf("layout (%s)", leyNames))
 	flag.Parse()
 
 	// Load the language

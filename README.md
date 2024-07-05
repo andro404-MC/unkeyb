@@ -39,7 +39,7 @@ $ unkeyb
 set layout :
 
 ```
-$ unkeyb -k gb
+$ unkeyb -k qwerty-uk
 ```
 
 set language :

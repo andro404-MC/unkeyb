@@ -23,8 +23,6 @@ type model struct {
 }
 
 type row struct {
-	prefix int
-
 	sKeys []rune
 	keys  []rune
 }

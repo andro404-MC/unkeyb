@@ -27,6 +27,8 @@ func bigKeyb(m *model) string {
 		}
 	}
 
+	var KeybWidth int
+
 	// Drawing Rows
 	var rows []string
 	for _, r := range layouts[m.layout] {
@@ -54,19 +56,26 @@ func bigKeyb(m *model) string {
 			}
 		}
 
+		row := lipgloss.JoinHorizontal(lipgloss.Right, keys...)
+
 		// Merging to row
 		rows = append(rows,
-			lipgloss.NewStyle().
-				MarginLeft(r.prefix).
-				Render(lipgloss.JoinHorizontal(lipgloss.Right, keys...)),
+			lipgloss.JoinHorizontal(lipgloss.Right, keys...),
 		)
+
+		rowWidth := lipgloss.Width(row)
+
+		if rowWidth > KeybWidth {
+			KeybWidth = rowWidth
+		}
+	}
+
+	for i := 0; i < len(rows); i++ {
+		rows[i] = lipgloss.PlaceHorizontal(KeybWidth, lipgloss.Center, rows[i])
 	}
 
 	// Mergin rows to the Keyboard layer
 	layerKeyb = lipgloss.JoinVertical(lipgloss.Left, rows...)
-
-	// Calculating the keyb Width
-	KeybWidth := lipgloss.Width(layerKeyb)
 
 	///////////
 	// Space //

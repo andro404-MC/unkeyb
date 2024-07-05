@@ -20,13 +20,13 @@ var (
 const AnsiReset = "\033[0m"
 
 func Load(lang string) {
-	data, _ := f.ReadFile("wordlists/en/short.txt")
+	data, _ := f.ReadFile("wordlists/" + lang + "/short.txt")
 	short = strings.Split(string(data), "\n")
 
-	data, _ = f.ReadFile("wordlists/en/medium.txt")
+	data, _ = f.ReadFile("wordlists/" + lang + "/medium.txt")
 	medium = strings.Split(string(data), "\n")
 
-	data, _ = f.ReadFile("wordlists/en/long.txt")
+	data, _ = f.ReadFile("wordlists/" + lang + "/long.txt")
 	long = strings.Split(string(data), "\n")
 }
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"strings"
@@ -14,11 +15,19 @@ import (
 )
 
 func main() {
-	generator.Load("en")
+	var lang, lay string
+
+	// Handling flags
+	flag.StringVar(&lang, "l", "en", "Language (en)")
+	flag.StringVar(&lay, "k", "us", "layout (us,gb)")
+	flag.Parse()
+
+	// Load the language
+	generator.Load(lang)
 
 	// Initializing the model
 	m := model{}
-	m.layout = "gb"
+	m.layout = lay
 	generateList(m.layout)
 	m.fistChar = true
 	m.sentence = generator.Sentence()

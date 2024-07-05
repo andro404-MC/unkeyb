@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	generator.Load()
+	generator.Load("en")
 
 	// Initializing the model
 	m := model{}

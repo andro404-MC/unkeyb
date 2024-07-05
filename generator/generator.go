@@ -8,29 +8,48 @@ import (
 	"unicode/utf8"
 )
 
-//go:embed google-10000-english/google-10000-english-no-swears.txt
+//go:embed wordlists/*
 var f embed.FS
-var lines []string
+
+var (
+	short  []string
+	medium []string
+	long   []string
+)
 
 const AnsiReset = "\033[0m"
 
-func Load() {
-	data, _ := f.ReadFile("google-10000-english/google-10000-english-no-swears.txt")
-	lines = strings.Split(string(data), "\n")
+func Load(lang string) {
+	data, _ := f.ReadFile("wordlists/en/short.txt")
+	short = strings.Split(string(data), "\n")
+
+	data, _ = f.ReadFile("wordlists/en/medium.txt")
+	medium = strings.Split(string(data), "\n")
+
+	data, _ = f.ReadFile("wordlists/en/long.txt")
+	long = strings.Split(string(data), "\n")
 }
 
 func Sentence() string {
 	var s string
 	wrdCnt := rand.Intn(20-10) + 10
 
+	wasShort := true
 	for i := 0; i < wrdCnt; i++ {
-		s += lines[rand.Intn(len(lines))]
-		if i+1 != wrdCnt {
-			if cos := rand.Intn(8); cos == 0 {
-				s += ", "
+		if wasShort {
+			r := rand.Intn(2)
+			if r == 1 {
+				s += medium[rand.Intn(len(medium))]
 			} else {
-				s += " "
+				s += long[rand.Intn(len(long))]
 			}
+		} else {
+			s += short[rand.Intn(len(short))]
+		}
+		wasShort = !wasShort
+
+		if i+1 != wrdCnt {
+			s += " "
 		} else {
 			s += "."
 		}

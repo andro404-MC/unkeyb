@@ -18,7 +18,7 @@ Nothing unless :
 > You need a to have `GOPATH` added to `PATH`
 
 ```
-$ git clone https://github.com/andro404-MC/gokeyb --recurse-submodules
+$ git clone https://github.com/andro404-MC/gokeyb
 $ cd unkeyb
 
 // Run

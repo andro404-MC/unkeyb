@@ -6,7 +6,6 @@ A simple TUI keyboard typing speed test built using Go and the bubbletea framewo
 
 > [!NOTE]
 > currently supporting english.
-> Currently supporting US and GB layouts.
 
 ## Requirement :
 
@@ -53,9 +52,4 @@ show help :
 
 ```
 $ unkeyb -h
-Usage of unkeyb:
-  -k string
-    	layout (us,gb) (default "us")
-  -l string
-    	Language (en) (default "en")
 ```

@@ -65,26 +65,28 @@ func bigKeyb(m *model) string {
 	// Mergin rows to the Keyboard layer
 	layerKeyb = lipgloss.JoinVertical(lipgloss.Left, rows...)
 
+	// Calculating the keyb Width
+	KeybWidth := lipgloss.Width(layerKeyb)
+
 	///////////
 	// Space //
 	///////////
 
 	if m.selected == ' ' {
 		if m.selected == m.requested {
-			layerSpace = styleBorderCorrect.MarginLeft(19).Render(generator.Spaces(21))
+			layerSpace = styleBorderCorrect.Render(generator.Spaces(21))
 		} else {
-			layerSpace = styleBorderWrong.MarginLeft(19).Render(generator.Spaces(21))
+			layerSpace = styleBorderWrong.Render(generator.Spaces(21))
 		}
 	} else {
-		layerSpace += styleBorderNormal.MarginLeft(19).Render(generator.Spaces(21))
+		layerSpace += styleBorderNormal.Render(generator.Spaces(21))
 	}
+
+	layerSpace = lipgloss.PlaceHorizontal(KeybWidth, lipgloss.Center, layerSpace)
 
 	//////////////
 	// Sentence //
 	//////////////
-
-	// Calculating the keyb Height and Width
-	KeybWidth := lipgloss.Width(layerKeyb)
 
 	// Fixed size
 	layerSentence = generator.FixedSize(m.sentence, KeybWidth-4)

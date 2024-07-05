@@ -19,7 +19,7 @@ func main() {
 
 	// Handling flags
 	flag.StringVar(&lang, "l", "en", "Language (en)")
-	flag.StringVar(&lay, "k", "us", "layout (us,gb)")
+	flag.StringVar(&lay, "k", "us", "layout (us,gb,us-dvorak)")
 	flag.Parse()
 
 	// Load the language

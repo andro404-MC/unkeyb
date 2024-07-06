@@ -26,7 +26,7 @@ func main() {
 	leyNames = strings.TrimSuffix(leyNames, ",")
 
 	// Handling flags
-	flag.StringVar(&lang, "l", "en", "Language (en)")
+	flag.StringVar(&lang, "l", "en", "Language (en,fr)")
 	flag.StringVar(&lay, "k", "qwerty", fmt.Sprintf("layout (%s)", leyNames))
 	flag.Parse()
 

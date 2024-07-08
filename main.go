@@ -15,7 +15,10 @@ import (
 )
 
 func main() {
-	var leyNames, lang, lay string
+	var leyNames, lang string
+
+	// Initializing the model
+	m := model{}
 
 	// Getting Layout names
 	for k := range layouts {
@@ -27,16 +30,16 @@ func main() {
 
 	// Handling flags
 	flag.StringVar(&lang, "l", "en", "Language (en,fr)")
-	flag.StringVar(&lay, "k", "qwerty", fmt.Sprintf("layout (%s)", leyNames))
+	flag.StringVar(&m.layout, "k", "qwerty", fmt.Sprintf("layout (%s)", leyNames))
+	flag.BoolVar(&m.minimal, "m", false, "enable minimal UI")
 	flag.Parse()
 
 	// Load the language
 	generator.Load(lang)
 
-	// Initializing the model
-	m := model{}
-	m.layout = lay
+	// generate keys
 	generateList(m.layout)
+
 	m.fistChar = true
 	m.sentence = generator.Sentence()
 	m.runeCount = utf8.RuneCountInString(m.sentence)
@@ -110,8 +113,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	// Getting the big template (more comming soon)
-	visual := bigKeyb(&m)
+	// Getting the template
+	var visual string
+	if m.minimal {
+		visual = uiMinimal(&m)
+	} else {
+		visual = uiNormal(&m)
+	}
 
 	// Getting visual height & width
 	visualWidth := lipgloss.Width(visual)

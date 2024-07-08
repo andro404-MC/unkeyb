@@ -8,7 +8,7 @@ import (
 	"unkeyb/generator"
 )
 
-func bigKeyb(m *model) string {
+func uiMinimal(m *model) string {
 	// Layers
 	var layerSentence, layerKeyb, layerSpace string
 	var shifted bool
@@ -47,12 +47,12 @@ func bigKeyb(m *model) string {
 			isClicked := m.selected == k
 			if isClicked {
 				if k == m.requested {
-					keys = append(keys, styleBorderCorrect.Render(string(k)))
+					keys = append(keys, styleCorrect.Render(string(k)))
 				} else {
-					keys = append(keys, styleBorderWrong.Render(string(k)))
+					keys = append(keys, styleWrong.Render(string(k)))
 				}
 			} else {
-				keys = append(keys, styleBorderNormal.Render(string(k)))
+				keys = append(keys, styleNormal.Render(string(k)))
 			}
 		}
 
@@ -81,14 +81,17 @@ func bigKeyb(m *model) string {
 	// Space //
 	///////////
 
+	spaceShape := "┌──────────────┐\n"
+	spaceShape += "└──────────────┘"
+
 	if m.selected == ' ' {
 		if m.selected == m.requested {
-			layerSpace = styleBorderCorrect.Render(generator.Spaces(21))
+			layerSpace = styleCorrect.Render(spaceShape)
 		} else {
-			layerSpace = styleBorderWrong.Render(generator.Spaces(21))
+			layerSpace = styleWrong.Render(spaceShape)
 		}
 	} else {
-		layerSpace += styleBorderNormal.Render(generator.Spaces(21))
+		layerSpace += styleNormal.Render(spaceShape)
 	}
 
 	layerSpace = lipgloss.PlaceHorizontal(KeybWidth, lipgloss.Center, layerSpace)
@@ -98,7 +101,7 @@ func bigKeyb(m *model) string {
 	//////////////
 
 	// Fixed size
-	layerSentence = generator.FixedSize(m.sentence, KeybWidth-4)
+	layerSentence = generator.FixedSize(m.sentence, KeybWidth)
 
 	// Highlighting the first letter
 	layerSentence = styleRequested.Render(
@@ -107,13 +110,10 @@ func bigKeyb(m *model) string {
 
 	// Request Enter click if done
 	if m.done {
-		layerSentence = lipgloss.PlaceHorizontal(KeybWidth-4, lipgloss.Center,
+		layerSentence = lipgloss.PlaceHorizontal(KeybWidth, lipgloss.Center,
 			fmt.Sprintf("WPM:%.2f Press Enter", m.wpm),
 		)
 	}
-
-	// Adding borders
-	layerSentence = styleBorderNormal.Render(layerSentence)
 
 	////////////////////
 	// Merging layers //

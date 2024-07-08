@@ -7,6 +7,7 @@ import (
 type model struct {
 	layout   string
 	sentence string
+	minimal  bool
 
 	runeCount int
 	startTime int64
@@ -30,6 +31,17 @@ type row struct {
 var keyList []rune
 
 var (
+	styleNormal = lipgloss.NewStyle().
+			PaddingLeft(1).PaddingRight(1).PaddingTop(1)
+
+	styleCorrect = lipgloss.NewStyle().
+			PaddingLeft(1).PaddingRight(1).PaddingTop(1).
+			Foreground(lipgloss.ANSIColor(4))
+
+	styleWrong = lipgloss.NewStyle().
+			PaddingLeft(1).PaddingRight(1).PaddingTop(1).
+			Foreground(lipgloss.ANSIColor(1))
+
 	styleBorderNormal = lipgloss.NewStyle().
 				BorderStyle(lipgloss.NormalBorder()).
 				PaddingLeft(1).PaddingRight(1)

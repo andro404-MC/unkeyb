@@ -69,14 +69,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case tea.KeyEnter:
 			// new Sentence creation and States reset
-			if m.done || m.prevKey == "tab"{
+			if m.done || m.prevKey == "tab" {
 				m.sentence = generator.Sentence()
 				m.runeCount = utf8.RuneCountInString(m.sentence)
 				m.done = false
 				m.fistChar = true
 				m.prevKey = ""
 			}
-
 
 		case tea.KeyEscape, tea.KeyCtrlC:
 			// bay bay
@@ -115,8 +114,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.termWidth = msg.Width
 		m.termHeight = msg.Height
 	}
-
-
 
 	return m, nil
 }

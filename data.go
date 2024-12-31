@@ -21,7 +21,7 @@ type model struct {
 
 	done     bool
 	fistChar bool
-	prevKey string
+	prevKey  string
 }
 
 type row struct {
